@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+df = pd.read_csv('comments2.csv')
+print(df.head(10))
+
+
+df['comments'] = df['comments'].astype(str)
+
+
+print('\nThe number of comments is:', len(df['comments']))
+
+
+#Bag of Words
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+vectorizer = CountVectorizer()
+
+
+x = vectorizer.fit_transform(df['comments'])
+print(x)
+
+
+print(pd.DataFrame(x.toarray(), columns=vectorizer.get_feature_names_out()))
+
+
+feature_rank = list(zip(vectorizer.get_feature_names_out(), [x[0] for x in x.sum(axis=0).T.tolist()]))
+
+
+feature_rank = np.array(sorted(feature_rank, key=lambda x: x[1], reverse=True))
+
+
+n = 9
+plt.figure(figsize=(5,5))
+plt.barh(-np.arange(n), feature_rank[:n, 1].astype(float), height=.6, align='center')
+plt.yticks(ticks=-np.arange(n), labels=feature_rank[:n, 0], fontsize=5)
+
+
+plt.show()
+
+
+from itertools import combinations, permutations
+
+
+perm = permutations(['employees', 'fun', 'enhance'])
+for i in list(perm):
+   print(i)
